@@ -1,0 +1,32 @@
+#include <stdio.h>
+#define POOL_SIZE 1024
+
+typedef struct {
+    char pool[POOL_SIZE];
+    int next_free_index;
+} MemoryManager;
+
+void init_manager(MemoryManager *manager) {
+    manager->next_free_index = 0;
+    printf ("HybridCore: Memory Pool initialazed with %d bytes.\n", POOL_SIZE);
+}
+int allocate(MemoryManager *manager, int size) {
+    if (manager->next_free_index + size <= POOL_SIZE) {
+        int start_index = manager->next_free_index;
+        manager->next_free_index += size;
+        return start_index;
+    }
+    return -1;
+}
+int main() {
+    MemoryManager myNAS;
+    init_manager (&myNAS);
+    int file1 = allocate(&myNAS, 100);
+    int file2 = allocate(&myNAS, 250);
+
+    printf ("file 1 allocated at index: %d\n", file1);
+    printf ("file 2 allocated at index: %d\n", file2);
+    printf ("total memory used: %d bytes\n", myNAS.next_free_index);
+
+    return 0;
+}
